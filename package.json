@@ -1,11 +1,10 @@
 {
   "name": "Segunda-entrega-proyecto-final",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/utils/server.js"
+    "start": "nodemon src/utils/server.js"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +15,15 @@
     "knex": "^0.95.9",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.12"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Damian-Abalos/segunda-entrega-backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Damian-Abalos/segunda-entrega-backend/issues"
+  },
+  "homepage": "https://github.com/Damian-Abalos/segunda-entrega-backend#readme",
+  "description": ""
 }

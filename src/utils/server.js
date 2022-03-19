@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(cors());
 
 app.use("/api/productos", rutaProductos);
-app.use('/api/carrito', rutaCarrito)
+app.use("/api/carrito", rutaCarrito)
 
 app.listen(8080, () => {
     console.log("server on");

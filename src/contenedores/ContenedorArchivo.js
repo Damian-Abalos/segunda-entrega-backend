@@ -83,7 +83,6 @@ class ContenedorArchivo {
         } catch (error) {
             throw new Error(`Error al guardar: ${error}`)
         }
-
     }
 
     async updateById(object, id) {
@@ -141,8 +140,6 @@ class ContenedorArchivo {
             throw new Error(`Error al eliminar: ${error}`)
         }
     }
-
-
 }
 
 module.exports = ContenedorArchivo

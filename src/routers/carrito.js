@@ -3,13 +3,6 @@ const {Router} = require("express")
 const productos = require('../daos/productos/ProductosDaoArchivo')
 const carritos = require('../daos/carritos/CarritosDaoArchivo')
 
-
-// const carritos = process.env.DB==="fileSystem" ? require('../daos/carritos/CarritosDaoArchivo') : 
-// require('../daos/carritos/CarritosDaoFirebase')
-
-// const productos = process.env.DB==="fileSystem" ? require('../daos/productos/ProductosDaoArchivo') : 
-// require('../daos/productos/ProductosDaoFirebase')
-
 const rutaCarrito = Router();
 
 //carrito

@@ -1,4 +1,6 @@
-import { mongoose, Schema, model } from "mongoose";
+const mongoose = require('mongoose');
+const {Schema} = require('mongoose');
+const {model} = require('mongoose');
 
 class ContenedorMongoDB{
 
@@ -6,9 +8,14 @@ class ContenedorMongoDB{
         this.url = url
 
         this.productSchema = new Schema({
-            name:{type: String, required: true},
-            description:{type: String, required: true},
-            price:{type: Number, required: true},
+            nombre:{type: String, required: true},
+            descripcion:{type: String, required: true},
+            codigo:{type: String, required: true},
+            foto:{type: String, required: true},
+            precio:{type: Number, required: true},
+            stock:{type: Number, required: true},
+            timestamp:{type: String, required: true},
+            id:{type: Number, required: true},
         })
 
         this.ProductModel = model(collection, this.productSchema)
@@ -17,7 +24,8 @@ class ContenedorMongoDB{
     async getAll() {
         try {
             await mongoose.connect(this.url)
-            return await ProductModel.find()            
+            console.log('mongoose conected');
+            return await this.ProductModel.find()            
         } catch (err) {
             throw new Error(`Error al buscar: ${err}`)
         } finally {
@@ -29,7 +37,7 @@ class ContenedorMongoDB{
     async getById(id) {
         try {
             await mongoose.connect(this.url)
-            return await ProductModel.find({id: id})            
+            return await this.ProductModel.find({id: id})            
         } catch (err) {
             throw new Error(`Error al buscar: ${err}`)
         } finally {
@@ -38,19 +46,27 @@ class ContenedorMongoDB{
         }
     }
 
+    async getProductsById(id) {
+
+    }
+
     async save(object) {
         try {
+            // await mongoose.connect(this.url)
             const data = await this.getAll()
             let ultimoId;
-            let ultimoProducto = data[data.length - 1];
+            let ultimoProducto = await data[data.length - 1];
 
             if (data.length == 0) { ultimoId = 0 } else { ultimoId = ultimoProducto.id }
 
-            const nId = ultimoId + 1
+            const nId = await ultimoId + 1
+            // const nId = await this.getLastId()
+            console.log(nId);
             const time = Date(Date.now()).toString()
-            const nuevoProducto = new this.ProductModel({ ...object, timestamp: time, id: nId })
-
+            const nuevoProducto = await new this.ProductModel({ ...object, timestamp: time, id:nId})
+            await mongoose.connect(this.url)
             const toSave = await nuevoProducto.save()
+            // return toSave
             console.log(`producto cargado: ${toSave}`);
         } catch (error) {
             throw new Error(`Error al guardar: ${error}`)
@@ -59,6 +75,11 @@ class ContenedorMongoDB{
             .catch((err)=>{console.error(err)})
         }
     }
+
+    async saveById(object, id) {
+
+    }
+
 
     async updateById(object, id) {
         try {
@@ -74,10 +95,14 @@ class ContenedorMongoDB{
         }   
     }
 
+    async updateCartById(id, id_prod) {
+
+    }
+
     async deleteById(id) {
         try {
             await mongoose.connect(this.url)
-            let resultado = await ProductModel.deleteOne({ id: id})
+            let resultado = await this.ProductModel.deleteOne({ id: id})
             console.log(`producto eliminado: ${resultado}`);
             return resultado
         } catch (error) {
@@ -89,4 +114,4 @@ class ContenedorMongoDB{
     }
 }
 
-export default ContenedorMongoDB
+module.exports = ContenedorMongoDB
