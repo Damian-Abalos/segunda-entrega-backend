@@ -1,14 +1,14 @@
 const {Router} = require("express")
 
-const productos = require('../daos/productos/ProductosDaoArchivo')
-const carritos = require('../daos/carritos/CarritosDaoArchivo')
+const productos = require('../daos/productos/ProductosDaoMongoDB')
+const carritos = require('../daos/carritos/CarritosDaoMongoDB')
 
 const rutaCarrito = Router();
 
 //carrito
 
 rutaCarrito.get("/", (req, res) => {
-    carritos.getAll().then((resp) => res.send(resp));
+    carritos.getAllCarts().then((resp) => res.send(resp));
 });
 
 rutaCarrito.get("/:id", (req, res) =>{
@@ -18,15 +18,15 @@ rutaCarrito.get("/:id", (req, res) =>{
 })
 
 rutaCarrito.post('/', (req, res) => {
-    carritos.save().then(resp => res.send(resp))
+    carritos.saveCart().then(resp => res.send(resp))
 })
 
 rutaCarrito.delete('/:id', (req, res) => {
     const id = req.params.id
-    carritos.deleteByID(id).then(resp => res.send(resp))
+    carritos.deleteById(id).then(resp => res.send(resp))
 })
 
-rutaCarrito.post('/:id/productos', (req, res) => {
+rutaCarrito.post('/:id/productos', async (req, res) => {
     const id = req.params.id
     const id_prod = req.body.id_prod
     productos.getById(id_prod)

@@ -46,13 +46,9 @@ class ContenedorMongoDB{
         }
     }
 
-    async getProductsById(id) {
-
-    }
 
     async save(object) {
         try {
-            // await mongoose.connect(this.url)
             const data = await this.getAll()
             let ultimoId;
             let ultimoProducto = await data[data.length - 1];
@@ -60,13 +56,11 @@ class ContenedorMongoDB{
             if (data.length == 0) { ultimoId = 0 } else { ultimoId = ultimoProducto.id }
 
             const nId = await ultimoId + 1
-            // const nId = await this.getLastId()
             console.log(nId);
             const time = Date(Date.now()).toString()
             const nuevoProducto = await new this.ProductModel({ ...object, timestamp: time, id:nId})
             await mongoose.connect(this.url)
             const toSave = await nuevoProducto.save()
-            // return toSave
             console.log(`producto cargado: ${toSave}`);
         } catch (error) {
             throw new Error(`Error al guardar: ${error}`)
@@ -75,12 +69,7 @@ class ContenedorMongoDB{
             .catch((err)=>{console.error(err)})
         }
     }
-
-    async saveById(object, id) {
-
-    }
-
-
+    
     async updateById(object, id) {
         try {
             await mongoose.connect(this.url)
@@ -93,10 +82,6 @@ class ContenedorMongoDB{
             mongoose.disconnect()
             .catch((err)=>{console.error(err)})
         }   
-    }
-
-    async updateCartById(id, id_prod) {
-
     }
 
     async deleteById(id) {
