@@ -1,7 +1,9 @@
 const {Router} = require("express")
 
-const productos = require('../daos/productos/ProductosDaoMongoDB')
-const carritos = require('../daos/carritos/CarritosDaoMongoDB')
+// const productos = require('../daos/productos/ProductosDaoMongoDB')
+// const carritos = require('../daos/carritos/CarritosDaoMongoDB')
+const productos = require('../daos/productos/ProductosDaoFirebase')
+const carritos = require('../daos/carritos/CarritosDaoFirebase')
 
 const rutaCarrito = Router();
 
@@ -18,7 +20,8 @@ rutaCarrito.get("/:id", (req, res) =>{
 })
 
 rutaCarrito.post('/', (req, res) => {
-    carritos.saveCart().then(resp => res.send(resp))
+    let object = req.body
+    carritos.save(object).then(resp => res.send(resp))
 })
 
 rutaCarrito.delete('/:id', (req, res) => {

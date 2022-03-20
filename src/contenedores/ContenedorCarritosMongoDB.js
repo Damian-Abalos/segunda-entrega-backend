@@ -57,9 +57,9 @@ class ContenedorCarritosMongoDB{
         }
     }
 
-    async saveCart(object) {
+    async save(object) {
         try {
-            const data = await this.getAllCarts()
+            const data = await this.getAll()
             let ultimoId;
             let ultimoCarrito = await data[data.length - 1];
 
@@ -99,9 +99,8 @@ class ContenedorCarritosMongoDB{
     async updateCartById(id, id_prod) {
         try {
             await mongoose.connect(this.url)
-            // const prodToDelete = await this.CarritoModel.updateOne({id:id}, {productos:{id:id_prod}})
-            // const prodToDelete = await this.CarritoModel.findOneAndDelete({id:id}, {productos:{id:id_prod}})
-            // console.log(prodToDelete);
+            const prodToDelete = await this.CarritoModel.updateOne({id:id},{$set:{id:id_prod}})
+            return prodToDelete
         } catch (error) {
             throw new Error(`Error al eliminar: ${error}`)
         } finally {

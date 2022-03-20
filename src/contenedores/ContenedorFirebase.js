@@ -1,0 +1,134 @@
+const { database } = require("firebase-admin");
+const admin = require("firebase-admin");
+const serviceAccount = require("../DB/basefirebase-a035b-firebase-adminsdk-8uw8n-2507f5c523.json");
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
+class ContenedorFirebase {
+    constructor(collection) {
+        this.collection = collection
+    }
+
+    async getAll() {
+        try {
+            const db = admin.firestore();
+            const query = db.collection(this.collection);
+            const querySnapshot = await query.get()
+            let docs = querySnapshot.docs;
+
+            const response = docs.map((doc) => ({
+                nombre: doc.data().nombre,
+                descripcion: doc.data().descripcion,
+                codigo: doc.data().codigo,
+                foto: doc.data().foto,
+                precio: doc.data().precio,
+                stock: doc.data().stock,
+                timestamp: doc.data().timestamp,
+                id: doc.data().id
+            }))
+            return response
+        } catch (error) {
+            throw new Error(`Error al buscar: ${error}`)
+        }
+    }
+
+    async getAllCarts() {
+        try {
+            const db = admin.firestore();
+            const query = db.collection(this.collection);
+            const querySnapshot = await query.get()
+            let docs = querySnapshot.docs;
+
+            const response = docs.map((doc) => ({
+                productos: doc.data().productos,
+                timestamp: doc.data().timestamp,
+                id: doc.data().id
+            }))
+            return response
+        } catch (error) {
+            throw new Error(`Error al buscar: ${error}`)
+        }
+    }
+
+    async getById(id) {
+        try {
+            const db = admin.firestore();
+            const query = db.collection(this.collection);
+            const data = await this.getAll()
+            const search = data.find(res => res.id == id)
+            return search || { error: `producto no encontrado` }
+        } catch (error) {
+            throw new Error(`Error al buscar por id: ${error}`)
+        }
+    }
+
+    async save(object) {
+        try {
+            const db = admin.firestore();
+            const query = db.collection(this.collection);
+            const data = await this.getAll()
+            let ultimoId;
+            let ultimoProducto = await data[data.length - 1];
+
+            if (data.length == 0) { ultimoId = 0 } else { ultimoId = ultimoProducto.id }
+
+            const nId = await ultimoId + 1
+            const time = Date(Date.now()).toString()
+
+            let doc = query.doc(`${nId}`)
+            await doc.create({ ...object, timestamp: time, id: nId })
+            await console.log('documento creado:' + doc);
+
+        } catch (error) {
+            throw new Error(`Error al guardar: ${error}`)
+        }
+    }
+
+    async saveById(object, id) {
+        try {
+            const db = admin.firestore();
+            const query = db.collection(this.collection);
+            
+            console.log(`Producto a cargar: ${object}`);
+            // let resultado = await this.CarritoModel.updateOne({id: id},{$push: {productos:object}})
+            console.log(`Producto cargado: ${resultado}`);
+
+            return `producto: ${object.nombre} cargado en carrito con id: ${id}`
+
+        } catch (error) {
+            throw new Error(`Error al guardar: ${error}`)
+        }
+    }
+
+    async updateById(object, id) {
+        try {
+            const db = admin.firestore();
+            const query = db.collection(this.collection);
+            const doc = query.doc(id)
+            const item = await doc.update(object)
+            console.log("documento actualizado:" + item);
+        } catch (error) {
+            throw new Error(`Error al modificar: ${error}`)
+        }
+    }
+
+
+
+    async deleteById(id) {
+        try {
+            const db = admin.firestore();
+            const query = db.collection(this.collection);
+            const doc = query.doc(id)
+            const item = await doc.delete()
+            console.log("Producto sido borrado exitosamente", item);
+        } catch (error) {
+            throw new Error(`Error al borrar: ${error}`)
+        }
+    }
+
+
+
+}
+
+module.exports = ContenedorFirebase

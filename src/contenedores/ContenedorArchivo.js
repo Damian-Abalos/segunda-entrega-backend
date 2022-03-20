@@ -15,6 +15,15 @@ class ContenedorArchivo {
         }
     }
 
+    async getAllCarts() {
+        try {
+            const all = await fs.readFile(this.ruta, 'utf-8')
+            return JSON.parse(all)
+        } catch (error) {
+            return error
+        }
+    }
+
     async getById(id) {
         try {
             const data = await this.getAll()
@@ -31,7 +40,7 @@ class ContenedorArchivo {
         try {
             return products || { error: `productos no encontrados` }
         } catch (error) {
-            return (`Error al buscar: ${error}`)
+            throw new Error(`Error al buscar: ${error}`)
         }
     }
 

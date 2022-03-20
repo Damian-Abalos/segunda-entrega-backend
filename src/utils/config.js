@@ -4,6 +4,9 @@ module.exports = {
         client: 'mongodb',
         cnxStr: 'mongodb://localhost:27017/ecommerce'
     },
+    firebase:{
+        serviceAccount: '../DB/basefirebase-a035b-firebase-adminsdk-8uw8n-2507f5c523.json'
+    },
     mongoRemote: {
         client: 'mongodb',
         cnxStr: ''  

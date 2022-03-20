@@ -1,7 +1,8 @@
 const {Router} = require("express")
 
 // const productos = require('../daos/productos/ProductosDaoArchivo')
-const productos = require('../daos/productos/ProductosDaoMongoDB')
+// const productos = require('../daos/productos/ProductosDaoMongoDB')
+const productos = require('../daos/productos/ProductosDaoFirebase')
 
 const rutaProductos = Router();
 
