@@ -1,4 +1,5 @@
-const { database } = require("firebase-admin");
+const FieldValue = require('firebase-admin').firestore.FieldValue;
+const arrayUnion = require('firebase-admin').firestore.arrayUnion;
 const admin = require("firebase-admin");
 const serviceAccount = require("../DB/basefirebase-a035b-firebase-adminsdk-8uw8n-2507f5c523.json");
 
@@ -55,9 +56,20 @@ class ContenedorFirebase {
         try {
             const db = admin.firestore();
             const query = db.collection(this.collection);
-            const data = await this.getAll()
-            const search = data.find(res => res.id == id)
-            return search || { error: `producto no encontrado` }
+            const doc = query.doc(`${id}`)
+            const item = await doc.get()
+            const response = item.data()
+            return response || { error: `producto no encontrado` }
+        } catch (error) {
+            throw new Error(`Error al buscar por id: ${error}`)
+        }
+    }
+
+    async getProductsById(id){
+        try {
+            const carrito = await this.getById(id)
+            const productos = carrito.productos
+            return  productos
         } catch (error) {
             throw new Error(`Error al buscar por id: ${error}`)
         }
@@ -89,10 +101,11 @@ class ContenedorFirebase {
         try {
             const db = admin.firestore();
             const query = db.collection(this.collection);
-            
-            console.log(`Producto a cargar: ${object}`);
-            // let resultado = await this.CarritoModel.updateOne({id: id},{$push: {productos:object}})
-            console.log(`Producto cargado: ${resultado}`);
+            const carrito = query.doc(id)
+            await carrito.update({
+                productos:FieldValue.arrayUnion(object)
+            })
+           
 
             return `producto: ${object.nombre} cargado en carrito con id: ${id}`
 
@@ -113,7 +126,24 @@ class ContenedorFirebase {
         }
     }
 
-
+    async updateCartById(id, id_prod){
+        try {
+            const db = admin.firestore();
+            const query = db.collection(this.collection);
+            const carrito = query.doc(id)
+            const productos = await this.getProductsById(id)
+            const indexToDelete = productos.findIndex(res => res.id == id_prod)
+            if (indexToDelete == -1) {
+                return { error: `producto no encontrado` }
+            } else {
+                productos.splice(indexToDelete, 1)
+            await carrito.update({
+                productos:productos
+            })}
+        } catch (error) {
+            throw new Error(`Error al modificar: ${error}`)
+        }
+    }
 
     async deleteById(id) {
         try {
