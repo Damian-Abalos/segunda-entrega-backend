@@ -1,9 +1,13 @@
 const {Router} = require("express")
 
-// const productos = require('../daos/productos/ProductosDaoMongoDB')
-// const carritos = require('../daos/carritos/CarritosDaoMongoDB')
-const productos = require('../daos/productos/ProductosDaoFirebase')
-const carritos = require('../daos/carritos/CarritosDaoFirebase')
+// const productos = require('../daos/productos/ProductosDaoArchivo')
+// const carritos = require('../daos/carritos/CarritosDaoArchivo')
+
+const productos = require('../daos/productos/ProductosDaoMongoDB')
+const carritos = require('../daos/carritos/CarritosDaoMongoDB')
+
+// const productos = require('../daos/productos/ProductosDaoFirebase')
+// const carritos = require('../daos/carritos/CarritosDaoFirebase')
 
 const rutaCarrito = Router();
 

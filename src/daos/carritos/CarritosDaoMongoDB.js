@@ -1,6 +1,7 @@
 const config = require ('../../utils/config.js')
-const ContenedorCarritosMongoDB = require("../../contenedores/ContenedorCarritosMongoDB")
+const ContenedorMongoDB = require("../../contenedores/ContenedorMongoDB")
+const schemaCarrito = require("../../schemas/carrito.schema")
 
-const carritos = new ContenedorCarritosMongoDB(config.mongoLocal.cnxStr, 'carrito')
+const carritos = new ContenedorMongoDB(config.mongoLocal.cnxStr, 'carrito', schemaCarrito)
 
 module.exports = carritos
