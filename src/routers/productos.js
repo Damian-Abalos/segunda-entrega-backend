@@ -1,12 +1,12 @@
 const {Router} = require("express")
+require('dotenv').config()
 
-// const productos = require('../daos/productos/ProductosDaoArchivo')
-const productos = require('../daos/productos/ProductosDaoMongoDB')
-// const productos = require('../daos/productos/ProductosDaoFirebase')
+const onlyAdmin = require('../middlewares/onlyAdmin')
+const validatorProductos = require('../middlewares/validators/validatorProductos')
+
+const productos = process.env.DB == 'Firebase' ? require('../daos/productos/ProductosDaoFirebase') : require('../daos/productos/ProductosDaoMongoDB')
 
 const rutaProductos = Router();
-
-const administrador = true;
 
 //productos
 
@@ -16,44 +16,22 @@ rutaProductos.get("/", (req, res) => {
 
 rutaProductos.get("/:id", (req, res) => {
     const id = req.params.id;
-    console.log(id);
     productos.getById(id).then((resp) => res.send(resp));
 });
 
-rutaProductos.post("/", (req, res) => {
+rutaProductos.post("/", validatorProductos, onlyAdmin, (req, res) => {
     const newData = req.body;
-    if (administrador) {
-        productos.save(newData).then((resp) => res.send(resp));
-    } else {
-        res.send({
-            error: -1,
-            descripcion: `ruta '${req.url}' método ${req.method}, no autorizada`,
-        });
-    }
+    productos.save(newData).then((resp) => res.send(resp));    
 });
 
-rutaProductos.put("/:id", (req, res) => {
+rutaProductos.put("/:id", onlyAdmin, (req, res) => {
     let id = req.params.id;
-    if (administrador) {
-        productos.updateById(req.body, id).then((resp) => res.send(resp));
-    } else {
-        res.send({
-            error: -1,
-            descripcion: `ruta '${req.url}' método ${req.method}, no autorizada`,
-        });
-    }
+    productos.updateById(req.body, id).then((resp) => res.send(resp));
 });
 
-rutaProductos.delete("/:id", (req, res) => {
+rutaProductos.delete("/:id", onlyAdmin, (req, res) => {
     let id = req.params.id;
-    if (administrador) {
-        productos.deleteById(id).then((resp) => res.send(resp));
-    } else {
-        res.send({
-            error: -1,
-            descripcion: `ruta '${req.url}' método ${req.method}, no autorizada`,
-        });
-    }
+    productos.deleteById(id).then((resp) => res.send(resp));    
 });
 
 module.exports = rutaProductos

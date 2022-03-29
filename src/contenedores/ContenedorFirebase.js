@@ -59,7 +59,7 @@ class ContenedorFirebase {
             const doc = query.doc(`${id}`)
             const item = await doc.get()
             const response = item.data()
-            return response || { error: `producto no encontrado` }
+            return response || { error: `${this.collection} no encontrado` }
         } catch (error) {
             throw new Error(`Error al buscar por id: ${error}`)
         }
@@ -91,6 +91,7 @@ class ContenedorFirebase {
             let doc = query.doc(`${nId}`)
             await doc.create({ ...object, timestamp: time, id: nId })
             await console.log('documento creado:' + doc);
+            return 'documento creado correctamente' 
 
         } catch (error) {
             throw new Error(`Error al guardar: ${error}`)
@@ -105,8 +106,6 @@ class ContenedorFirebase {
             await carrito.update({
                 productos:FieldValue.arrayUnion(object)
             })
-           
-
             return `producto: ${object.nombre} cargado en carrito con id: ${id}`
 
         } catch (error) {
@@ -119,8 +118,9 @@ class ContenedorFirebase {
             const db = admin.firestore();
             const query = db.collection(this.collection);
             const doc = query.doc(id)
-            const item = await doc.update(object)
-            console.log("documento actualizado:" + item);
+            await doc.update(object)
+            const actualizado = await this.getById(id)
+            return actualizado
         } catch (error) {
             throw new Error(`Error al modificar: ${error}`)
         }
@@ -140,6 +140,7 @@ class ContenedorFirebase {
             await carrito.update({
                 productos:productos
             })}
+            return `producto con id:${id_prod} eliminado correctamente del carrito con id: ${id}`
         } catch (error) {
             throw new Error(`Error al modificar: ${error}`)
         }
@@ -150,15 +151,12 @@ class ContenedorFirebase {
             const db = admin.firestore();
             const query = db.collection(this.collection);
             const doc = query.doc(id)
-            const item = await doc.delete()
-            console.log("Producto sido borrado exitosamente", item);
+            await doc.delete()
+            return `${this.collection} con id ${id} borrado exitosamente`
         } catch (error) {
             throw new Error(`Error al borrar: ${error}`)
         }
     }
-
-
-
 }
 
 module.exports = ContenedorFirebase

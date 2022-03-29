@@ -1,13 +1,10 @@
 const {Router} = require("express")
+require('dotenv').config()
 
-// const productos = require('../daos/productos/ProductosDaoArchivo')
-// const carritos = require('../daos/carritos/CarritosDaoArchivo')
+const validateCarrito = require('../middlewares/validators/validatorCarrito')
 
-const productos = require('../daos/productos/ProductosDaoMongoDB')
-const carritos = require('../daos/carritos/CarritosDaoMongoDB')
-
-// const productos = require('../daos/productos/ProductosDaoFirebase')
-// const carritos = require('../daos/carritos/CarritosDaoFirebase')
+const productos = process.env.DB == 'Firebase' ? require('../daos/productos/ProductosDaoFirebase') : require('../daos/productos/ProductosDaoMongoDB')
+const carritos = process.env.DB == 'Firebase' ? require('../daos/carritos/CarritosDaoFirebase') : require('../daos/carritos/CarritosDaoMongoDB')
 
 const rutaCarrito = Router();
 
@@ -19,11 +16,10 @@ rutaCarrito.get("/", (req, res) => {
 
 rutaCarrito.get("/:id", (req, res) =>{
     const id = req.params.id;
-    console.log(id);
     carritos.getById(id).then((resp) => res.send(resp));
 })
 
-rutaCarrito.post('/', (req, res) => {
+rutaCarrito.post('/', validateCarrito, (req, res) => {
     let object = req.body
     carritos.save(object).then(resp => res.send(resp))
 })
